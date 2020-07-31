@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
@@ -79,6 +79,10 @@ const CalendarWeekBody = styled.div`
         background-color: #ced4da;
       }
     }
+
+    .gray {
+      color: #868e96;
+    }
   }
 `;
 
@@ -88,10 +92,15 @@ const Calendar = ({ lastMonth, nextMonth, month, year, week }) => {
   const displayCalendar = (dayArray) => {
     let html = '';
     let cnt = 0;
+    console.log(dayArray[0].getMonth());
     for (let i = 0; i < 6; i++) {
       html += `<div class="row">`;
       for (let j = 0; j < 7; j++) {
-        html += `<div><span>${dayArray[cnt++].getDate()}</span></div>`;
+        html += `<div>
+          <span class="${dayArray[cnt].getMonth() + 1 !== month ? 'gray' : ''}">
+            ${dayArray[cnt++].getDate()}
+          </span>
+        </div>`;
       }
       html += `</div>`;
     }
@@ -120,6 +129,7 @@ const Calendar = ({ lastMonth, nextMonth, month, year, week }) => {
           </CalendarWeekHeader>
           <CalendarWeekBody
             dangerouslySetInnerHTML={{ __html: displayCalendar(week) }}
+            month={month}
           ></CalendarWeekBody>
         </CalendarBody>
       </CalendarBlock>
