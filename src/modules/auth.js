@@ -1,5 +1,8 @@
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
+import * as authAPI from '../lib/api/auth';
+import { takeLatest } from 'redux-saga/effects';
+import createRequestSaga from '../lib/createRequestSaga';
 
 const CHANGE_FILED = 'auth/CHANGE_FILED';
 const INITIALIZE_FORM = 'auth/INITIALIZE_FORM';
@@ -7,6 +10,10 @@ const INITIALIZE_FORM = 'auth/INITIALIZE_FORM';
 const REGISTER = 'auth/REGISTER';
 const REGISTER_SUCCESS = 'auth/REGISTER_SUCCESS';
 const REGISTER_FAILURE = 'auth/REGISTER_FAILURE';
+
+// const LOGIN = 'auth/LOGIN';
+// const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS';
+// const LOGIN_FAILURE = 'auth/LOGIN_FAILURE';
 
 const initialState = {
   register: {
@@ -33,21 +40,26 @@ export const changeFiled = createAction(
 
 export const initializeForm = createAction(INITIALIZE_FORM, (form) => form);
 
-export const register = () => (dispatch, state) => {
-  // 로딩 ?
-  try {
-    dispatch({ type: 'auth/REGISTER_SUCCESS' }); // 보낼 데이터 api
-  } catch (e) {
-    dispatch({ type: 'auth/REGISTER_FAILURE', e });
-  }
-  // 로딩 끝?
-};
+export const register = createAction(REGISTER, ({ username, password }) => ({
+  username,
+  password,
+}));
+
+// export const login = createAction()
+
+// 사가 생성
+const registerSaga = createRequestSaga(REGISTER, authAPI.register);
+
+export function* authSaga() {
+  yield takeLatest(REGISTER, registerSaga);
+}
 
 const auth = handleActions(
   {
     [INITIALIZE_FORM]: (state, { payload: form }) => ({
       ...state,
       [form]: initialState[form],
+      authError: null,
     }),
     [CHANGE_FILED]: (state, { payload: { form, key, value } }) =>
       produce(state, (draft) => {
@@ -55,6 +67,8 @@ const auth = handleActions(
       }),
     [REGISTER_SUCCESS]: (state, { payload: auth }) => ({
       ...state,
+      auth,
+      authError: null,
     }),
     [REGISTER_FAILURE]: (state, { payload: error }) => ({
       ...state,

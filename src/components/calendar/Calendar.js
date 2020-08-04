@@ -14,13 +14,21 @@ const CalendarBackgroundBlock = styled.div`
   align-items: center;
 `;
 
+const UsernameBlock = styled.div``;
+
+const UsernameHeader = styled.header`
+  text-align: center;
+  background: #fff;
+  padding-top: 25px;
+  font-size: 25px;
+`;
+
 const CalendarBlock = styled.div`
   background: white;
   width: 480px;
   height: 300px;
   text-align: center;
   padding: 20px;
-  border-radius: 5px;
 `;
 
 const CalendarHeader = styled.div`
@@ -109,30 +117,33 @@ const Calendar = ({ lastMonth, nextMonth, month, year, week }) => {
 
   return (
     <CalendarBackgroundBlock>
-      <CalendarBlock>
-        <CalendarHeader>
-          <FiChevronLeft className="leftButton" onClick={lastMonth} />
-          <span>
-            {year}년 {month}월
-          </span>
-          <FiChevronRight className="rightButton" onClick={nextMonth} />
-        </CalendarHeader>
-        <CalendarBody>
-          <CalendarWeekHeader>
-            {weekHeaderArray.map((week, index) => {
-              return (
-                <div key={index}>
-                  <span className={`index${index}`}>{week}</span>
-                </div>
-              );
-            })}
-          </CalendarWeekHeader>
-          <CalendarWeekBody
-            dangerouslySetInnerHTML={{ __html: displayCalendar(week) }}
-            month={month}
-          ></CalendarWeekBody>
-        </CalendarBody>
-      </CalendarBlock>
+      <UsernameBlock>
+        <UsernameHeader>누구누구의 스케쥴</UsernameHeader>
+        <CalendarBlock>
+          <CalendarHeader>
+            <FiChevronLeft className="leftButton" onClick={lastMonth} />
+            <span>
+              {year}년 {month}월
+            </span>
+            <FiChevronRight className="rightButton" onClick={nextMonth} />
+          </CalendarHeader>
+          <CalendarBody>
+            <CalendarWeekHeader>
+              {weekHeaderArray.map((week, index) => {
+                return (
+                  <div key={index}>
+                    <span className={`index${index}`}>{week}</span>
+                  </div>
+                );
+              })}
+            </CalendarWeekHeader>
+            <CalendarWeekBody
+              dangerouslySetInnerHTML={{ __html: displayCalendar(week) }}
+              month={month}
+            ></CalendarWeekBody>
+          </CalendarBody>
+        </CalendarBlock>
+      </UsernameBlock>
     </CalendarBackgroundBlock>
   );
 };
