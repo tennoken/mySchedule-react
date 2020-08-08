@@ -6,6 +6,8 @@ import { changeYear } from '../../modules/calendar';
 const CalendarConatiner = () => {
   let week = [];
   let { month, year } = useSelector((state) => state.calendar.date);
+  const { auth } = useSelector(({ auth }) => ({ auth: auth.auth }));
+  console.log(auth);
 
   const dispatch = useDispatch();
 

@@ -6,6 +6,7 @@ export default function createRequestSaga(type, request) {
   const FAILURE = `${type}_FAILURE`;
 
   return function* (action) {
+    console.log(action);
     yield put(startLoading(type)); // 로딩 시작
     try {
       const response = yield call(request, action.payload);

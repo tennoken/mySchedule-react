@@ -11,9 +11,9 @@ const REGISTER = 'auth/REGISTER';
 const REGISTER_SUCCESS = 'auth/REGISTER_SUCCESS';
 const REGISTER_FAILURE = 'auth/REGISTER_FAILURE';
 
-// const LOGIN = 'auth/LOGIN';
-// const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS';
-// const LOGIN_FAILURE = 'auth/LOGIN_FAILURE';
+const LOGIN = 'auth/LOGIN';
+const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS';
+const LOGIN_FAILURE = 'auth/LOGIN_FAILURE';
 
 const initialState = {
   register: {
@@ -29,7 +29,7 @@ const initialState = {
   authError: null,
 };
 
-export const changeFiled = createAction(
+export const changeField = createAction(
   CHANGE_FILED,
   ({ form, key, value }) => ({
     form, // login, register
@@ -45,13 +45,19 @@ export const register = createAction(REGISTER, ({ username, password }) => ({
   password,
 }));
 
-// export const login = createAction()
+export const login = createAction(LOGIN, ({ username, password }) => ({
+  username,
+  password,
+}));
 
 // 사가 생성
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
 
+const loginSaga = createRequestSaga(LOGIN, authAPI.login);
+
 export function* authSaga() {
   yield takeLatest(REGISTER, registerSaga);
+  yield takeLatest(LOGIN, loginSaga);
 }
 
 const auth = handleActions(
@@ -71,6 +77,15 @@ const auth = handleActions(
       authError: null,
     }),
     [REGISTER_FAILURE]: (state, { payload: error }) => ({
+      ...state,
+      authError: error,
+    }),
+    [LOGIN_SUCCESS]: (state, { payload: auth }) => ({
+      ...state,
+      auth,
+      authError: null,
+    }),
+    [LOGIN_FAILURE]: (state, { payload: error }) => ({
       ...state,
       authError: error,
     }),

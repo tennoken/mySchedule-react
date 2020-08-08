@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AuthForm from '../../components/auth/AuthForm';
-import { changeFiled, initializeForm, register } from '../../modules/auth';
+import { changeField, initializeForm, register } from '../../modules/auth';
+import { useState } from 'react';
 
 const RegisterContainer = ({ type }) => {
   // const form = useSelector((state) => state.auth.login);
+  const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const { form, auth, authError } = useSelector(({ auth }) => ({
     form: auth.register,
@@ -15,10 +17,23 @@ const RegisterContainer = ({ type }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     const { username, password, passwordConfirm } = form;
-    if (password !== passwordConfirm) {
-      //오류
+
+    //하나라도 비어있다면
+    if ([username, password, passwordConfirm].includes('')) {
+      setError('빈 칸을 채워주세요.');
       return;
     }
+
+    //비밀번호가 다르다면
+    if (password !== passwordConfirm) {
+      setError('비밀번호가 일치하지 않습니다.');
+      dispatch(changeField({ form: 'register', key: 'password', value: '' }));
+      dispatch(
+        changeField({ form: 'register', key: 'passwordConfirm', value: '' }),
+      );
+      return;
+    }
+
     dispatch(register({ username, password }));
   };
 
@@ -26,7 +41,7 @@ const RegisterContainer = ({ type }) => {
     const { value, name } = e.target;
 
     dispatch(
-      changeFiled({
+      changeField({
         form: 'register',
         key: name,
         value,
@@ -46,11 +61,20 @@ const RegisterContainer = ({ type }) => {
     }
     if (auth) {
       console.log('회원가입 성공');
+      setError(null);
       console.log(auth);
     }
   }, [auth, authError]);
 
-  return <AuthForm type={type} onChange={onChange} onSubmit={onSubmit} />;
+  return (
+    <AuthForm
+      type={type}
+      form={form}
+      onChange={onChange}
+      onSubmit={onSubmit}
+      error={error}
+    />
+  );
 };
 
 export default RegisterContainer;

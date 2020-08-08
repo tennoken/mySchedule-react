@@ -71,12 +71,18 @@ const LinkBlock = styled.div`
   }
 `;
 
+const ErrorMessage = styled.div`
+  text-align: center;
+  padding-top: 15px;
+  color: red;
+`;
+
 const formType = {
   login: '로그인',
   register: '회원가입',
 };
 
-const AuthForm = ({ type, onChange, onSubmit }) => {
+const AuthForm = ({ type, form, onChange, onSubmit, error }) => {
   const text = formType[type];
 
   return (
@@ -90,12 +96,14 @@ const AuthForm = ({ type, onChange, onSubmit }) => {
             placeholder="아이디"
             name="username"
             onChange={onChange}
+            value={form.username}
           />
           <StyledInput
             placeholder="비밀번호"
             name="password"
             type="password"
             onChange={onChange}
+            value={form.password}
           />
           {type === 'register' ? (
             <StyledInput
@@ -103,10 +111,12 @@ const AuthForm = ({ type, onChange, onSubmit }) => {
               name="passwordConfirm"
               type="password"
               onChange={onChange}
+              value={form.passwordConfirm}
             />
           ) : (
             ''
           )}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
           <StyledButton>{text}</StyledButton>
         </form>
         <LinkBlock>
