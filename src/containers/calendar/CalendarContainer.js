@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { changeYear } from '../../modules/calendar';
 import { logoutUser } from '../../modules/user';
 import { withRouter } from 'react-router-dom';
+import { logoutAuth } from '../../modules/auth';
 
 const CalendarConatiner = ({ history }) => {
   let week = [];
@@ -17,6 +18,7 @@ const CalendarConatiner = ({ history }) => {
   // 로그아웃
   const onLogout = () => {
     dispatch(logoutUser());
+    dispatch(logoutAuth());
     history.push('/');
   };
 

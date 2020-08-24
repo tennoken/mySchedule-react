@@ -15,6 +15,9 @@ const LOGIN = 'auth/LOGIN';
 const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS';
 const LOGIN_FAILURE = 'auth/LOGIN_FAILURE';
 
+// 로그아웃 했을 시 auth 초기화
+const LOGOUT_AUTH = 'auth/LOGOUT';
+
 const initialState = {
   register: {
     username: '',
@@ -49,6 +52,9 @@ export const login = createAction(LOGIN, ({ username, password }) => ({
   username,
   password,
 }));
+
+// 로그아웃을 했을 시 auth 초기화
+export const logoutAuth = createAction(LOGOUT_AUTH);
 
 // 사가 생성
 const registerSaga = createRequestSaga(REGISTER, authAPI.register);
@@ -96,6 +102,10 @@ const auth = handleActions(
     [LOGIN_FAILURE]: (state, { payload: error }) => ({
       ...state,
       authError: error,
+    }),
+    [LOGOUT_AUTH]: (state) => ({
+      ...state,
+      auth: null,
     }),
   },
   initialState,
