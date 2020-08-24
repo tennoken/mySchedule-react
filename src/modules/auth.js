@@ -62,29 +62,37 @@ export function* authSaga() {
 
 const auth = handleActions(
   {
+    // 입력 폼 초기화
     [INITIALIZE_FORM]: (state, { payload: form }) => ({
       ...state,
       [form]: initialState[form],
       authError: null,
     }),
+
+    // 입력 폼에 변화가 생길 시
     [CHANGE_FILED]: (state, { payload: { form, key, value } }) =>
       produce(state, (draft) => {
         draft[form][key] = value;
       }),
+    // 회원가입 성공
     [REGISTER_SUCCESS]: (state, { payload: auth }) => ({
       ...state,
       auth,
       authError: null,
     }),
+    // 회원가입 실패
     [REGISTER_FAILURE]: (state, { payload: error }) => ({
       ...state,
       authError: error,
     }),
+    // 로그인 성공
     [LOGIN_SUCCESS]: (state, { payload: auth }) => ({
       ...state,
       auth,
       authError: null,
     }),
+
+    // 회원가입 실패
     [LOGIN_FAILURE]: (state, { payload: error }) => ({
       ...state,
       authError: error,

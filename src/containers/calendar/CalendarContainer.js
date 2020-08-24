@@ -2,14 +2,23 @@ import React, { useCallback } from 'react';
 import Calendar from '../../components/calendar/Calendar';
 import { useSelector, useDispatch } from 'react-redux';
 import { changeYear } from '../../modules/calendar';
+import { logoutUser } from '../../modules/user';
+import { withRouter } from 'react-router-dom';
 
-const CalendarConatiner = () => {
+const CalendarConatiner = ({ history }) => {
   let week = [];
   let { month, year } = useSelector((state) => state.calendar.date);
-  const { auth } = useSelector(({ auth }) => ({ auth: auth.auth }));
-  console.log(auth);
+  const { user } = useSelector(({ user }) => ({
+    user: user.user,
+  }));
 
   const dispatch = useDispatch();
+
+  // 로그아웃
+  const onLogout = () => {
+    dispatch(logoutUser());
+    history.push('/');
+  };
 
   const getCalendar = useCallback(
     (thisYear, thisMonth) => {
@@ -30,7 +39,7 @@ const CalendarConatiner = () => {
       month = 13;
       year = year - 1;
     }
-    console.log(year, month - 1);
+
     dispatch(changeYear(year, month - 1));
   };
 
@@ -39,7 +48,7 @@ const CalendarConatiner = () => {
       month = 0;
       year = year + 1;
     }
-    console.log(year, month + 1);
+
     dispatch(changeYear(year, month + 1));
   };
 
@@ -54,8 +63,10 @@ const CalendarConatiner = () => {
       week={week}
       year={year}
       month={month}
+      user={user}
+      onLogout={onLogout}
     />
   );
 };
 
-export default React.memo(CalendarConatiner);
+export default React.memo(withRouter(CalendarConatiner));

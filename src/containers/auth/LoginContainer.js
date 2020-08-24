@@ -3,14 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import AuthForm from '../../components/auth/AuthForm';
 import { changeField, initializeForm, login } from '../../modules/auth';
 import { useState } from 'react';
+import { checkUser } from '../../modules/user';
+import { withRouter } from 'react-router-dom';
 
-const LoginContainer = ({ type }) => {
+const LoginContainer = ({ type, history }) => {
   // const form = useSelector((state) => state.auth.login);
   const [error, setError] = useState(null);
-  const { form, auth, authError } = useSelector(({ auth }) => ({
+  const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
     form: auth.login,
     auth: auth.auth,
     authError: auth.authError,
+    user: user.user,
   }));
 
   const dispatch = useDispatch();
@@ -37,6 +40,7 @@ const LoginContainer = ({ type }) => {
 
   useEffect(() => {
     dispatch(initializeForm('login'));
+    setError(null);
   }, [dispatch]);
 
   useEffect(() => {
@@ -49,9 +53,20 @@ const LoginContainer = ({ type }) => {
     if (auth) {
       console.log('로그인 성공');
       setError(null);
-      console.log(auth);
+      dispatch(checkUser());
     }
-  }, [auth, authError]);
+  }, [auth, authError, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      history.push('/calendar');
+      try {
+        localStorage.setItem('user', JSON.stringify(user));
+      } catch (e) {
+        console.log('localStorage is not working');
+      }
+    }
+  }, [history, user]);
 
   return (
     <AuthForm
@@ -64,4 +79,4 @@ const LoginContainer = ({ type }) => {
   );
 };
 
-export default LoginContainer;
+export default withRouter(LoginContainer);

@@ -8,13 +8,16 @@ const CalendarBackgroundBlock = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #343a40;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const UsernameBlock = styled.div``;
+const CalendarWrapper = styled.div``;
+
+const UsernameBlock = styled.div`
+  width: 100%;
+`;
 
 const UsernameHeader = styled.header`
   text-align: center;
@@ -52,6 +55,8 @@ const CalendarBody = styled.div`
 const CalendarWeekHeader = styled.div`
   display: flex;
   justify-content: center;
+  border-bottom: 1px solid;
+  padding-bottom: 10px;
 
   span {
     font-size: 24px;
@@ -94,8 +99,34 @@ const CalendarWeekBody = styled.div`
   }
 `;
 
-const Calendar = ({ lastMonth, nextMonth, month, year, week }) => {
+const StyledButton = styled.button`
+  width: 100%;
+  background: #868e96;
+  margin-top: 30px;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  font-size: 18px;
+
+  &:hover {
+    background-color: #66d9e8;
+  }
+`;
+
+const Calendar = ({
+  lastMonth,
+  nextMonth,
+  month,
+  year,
+  week,
+  user,
+  onLogout,
+}) => {
   const weekHeaderArray = ['일', '월', '화', '수', '목', '금', '토'];
+
+  const { username } = user;
 
   const displayCalendar = (dayArray) => {
     let html = '';
@@ -117,8 +148,11 @@ const Calendar = ({ lastMonth, nextMonth, month, year, week }) => {
 
   return (
     <CalendarBackgroundBlock>
-      <UsernameBlock>
-        <UsernameHeader>누구누구의 스케쥴</UsernameHeader>
+      <CalendarWrapper>
+        <UsernameBlock>
+          <UsernameHeader>{username} 님의 스케쥴</UsernameHeader>
+          <StyledButton onClick={onLogout}>로그아웃</StyledButton>
+        </UsernameBlock>
         <CalendarBlock>
           <CalendarHeader>
             <FiChevronLeft className="leftButton" onClick={lastMonth} />
@@ -143,7 +177,7 @@ const Calendar = ({ lastMonth, nextMonth, month, year, week }) => {
             ></CalendarWeekBody>
           </CalendarBody>
         </CalendarBlock>
-      </UsernameBlock>
+      </CalendarWrapper>
     </CalendarBackgroundBlock>
   );
 };

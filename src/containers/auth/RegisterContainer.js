@@ -3,16 +3,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import AuthForm from '../../components/auth/AuthForm';
 import { changeField, initializeForm, register } from '../../modules/auth';
 import { useState } from 'react';
+import { withRouter } from 'react-router-dom';
+import { checkUser } from '../../modules/user';
 
-const RegisterContainer = ({ type }) => {
+const RegisterContainer = ({ type, history }) => {
   // const form = useSelector((state) => state.auth.login);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const { form, auth, authError } = useSelector(({ auth }) => ({
+  const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
     form: auth.register,
     auth: auth.auth,
     authError: auth.authError,
+    user: user.user,
   }));
+
+  console.log(user);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -51,20 +56,27 @@ const RegisterContainer = ({ type }) => {
 
   useEffect(() => {
     dispatch(initializeForm('register'));
+    setError(null);
   }, [dispatch]);
 
   useEffect(() => {
     if (authError) {
-      console.log('오류 발생');
-      console.log(authError);
+      // 계정이 존재 할 때
+      if (authError.response.status === 409) {
+        setError('이미 존재하는 계정명입니다.');
+        return;
+      }
+      // 기타 이유
+      setError('회원가입 실패');
       return;
     }
     if (auth) {
       console.log('회원가입 성공');
-      setError(null);
       console.log(auth);
+      history.push('/');
+      dispatch(checkUser());
     }
-  }, [auth, authError]);
+  }, [auth, authError, dispatch, history]);
 
   return (
     <AuthForm
@@ -77,4 +89,4 @@ const RegisterContainer = ({ type }) => {
   );
 };
 
-export default RegisterContainer;
+export default withRouter(RegisterContainer);
